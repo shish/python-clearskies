@@ -23,11 +23,12 @@ class Transport(object):
 
 class UnixJsonTransport(Transport):
     def __init__(self, control_path):
-        self.socket = socket.socket(socket.AF_UNIX, socket.SOCK_STREAM)
+        self.socket = None
         self.control_path = control_path
 
     def connect(self):
         try:
+            self.socket = socket.socket(socket.AF_UNIX, socket.SOCK_STREAM)
             self.socket.connect(self.control_path)
         except socket.error as e:
             raise TransportException(e)
