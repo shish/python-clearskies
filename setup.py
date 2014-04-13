@@ -25,6 +25,7 @@ setup(
     long_description=README + '\n\n' + CHANGES,
     classifiers=[
         "Programming Language :: Python",
+        "Programming Language :: Python :: 3",
     ],
     author='Shish',
     author_email='shish+clsk@shishnet.org',
