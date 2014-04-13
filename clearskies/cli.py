@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 
 from clearskies.client import ClearSkies
+from clearskies.exc import ClientException
 
 import sys
 import argparse
@@ -66,8 +67,8 @@ class CLI(object):
 
         try:
             self.cs.connect()
-        except FileNotFoundError:
-            log.error("Coudn't connect to %s" % self.cs.control_path)
+        except ClientException as e:
+            log.error("Coudn't connect to daemon: %s" % e)
             log.error("Is the daemon running?")
             return
 

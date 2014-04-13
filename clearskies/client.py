@@ -1,12 +1,20 @@
 from clearskies.transport import UnixJsonTransport
 from clearskies.exc import ProtocolException, TransportException
-import xdg.BaseDirectory
 import os
+
+try:
+    import xdg.BaseDirectory as xdgBaseDirectory
+except ImportError:
+    # hack for dependency-free quickstart
+    class xdgBaseDirectory:
+        @staticmethod
+        def save_data_path(x):
+            return os.path.join(os.path.expanduser("~/.local/share/"), x)
 
 
 class ClearSkies(object):
     def __init__(self):
-        data_dir = xdg.BaseDirectory.save_data_path("clearskies")
+        data_dir = xdgBaseDirectory.save_data_path("clearskies")
         control_path = os.path.join(data_dir, "control")
         self.connected = False
         self.socket = UnixJsonTransport(control_path)
