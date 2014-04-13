@@ -45,7 +45,7 @@ class UnixJsonTransport(Transport):
         try:
             log.debug("> %s" % js)
             data = json.dumps(js)
-            self.socket.send(data+"\n")
+            self.socket.send((data + "\n").encode("utf8"))
         except socket.error as e:
             raise TransportException(e)
 
