@@ -15,13 +15,13 @@ class UnixJsonSocket(object):
 
     def recv(self):
         data = self.socket.recv(1024)
+        log.debug("< %s" % data)
         js = json.loads(data.decode("utf8"))
-        log.debug("< %s" % js)
         return js
 
     def send(self, js):
-        log.debug("> %s" % js)
         data = json.dumps(js)
+        log.debug("> %s" % data)
         self.socket.send(data+"\n")
 
     def close(self):
