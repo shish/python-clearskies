@@ -37,6 +37,6 @@ setup(
     install_requires=requires,
     entry_points="""\
     [console_scripts]
-    clearskies = clearskies.cli:main
+    cscli = clearskies.cli:main
     """,
 )
