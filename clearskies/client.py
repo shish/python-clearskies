@@ -73,6 +73,10 @@ class ClearSkies(object):
         })["shares"]
 
     def create_access_code(self, path, mode):
+        valid_modes = ["read_write", "read_only", "untrusted"]
+        if mode not in valid_modes:
+            raise ValueError("Invalid access code mode, must be one of %s" % valid_modes)
+
         return self._cmd({
             "type": "create_access_code",
             "path": path,

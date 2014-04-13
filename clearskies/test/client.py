@@ -146,6 +146,16 @@ class TestClearSkies(unittest.TestCase):
             "mode": "read_write",
         })
 
+    def test_create_access_code__invalid_mode(self, UJS):
+        UJS().recv.side_effect = [
+            {"protocol": 1, "service": "ClearSkies Control", "software": "test"},
+            {},
+        ]
+
+        c = ClearSkies()
+        c.connect()
+        self.assertRaises(ValueError, c.create_access_code, "/home/foo/Shared", "not_a_real_mode")
+
     def test_add_share(self, UJS):
         UJS().recv.side_effect = [
             {"protocol": 1, "service": "ClearSkies Control", "software": "test"},
