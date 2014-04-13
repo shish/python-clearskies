@@ -1,25 +1,25 @@
-from clearskies.unixjsonsocket import UnixJsonSocket
+from clearskies.transport import UnixJsonTransport
+from clearskies.exc import ProtocolException, TransportException
 import xdg.BaseDirectory
 import os
-
-
-class ProtocolException(Exception):
-    pass
 
 
 class ClearSkies(object):
     def __init__(self):
         data_dir = xdg.BaseDirectory.save_data_path("clearskies")
         control_path = os.path.join(data_dir, "control")
-        self.socket = UnixJsonSocket(control_path)
+        self.connected = False
+        self.socket = UnixJsonTransport(control_path)
 
     def connect(self):
-        self.socket.connect()
-
         try:
+            self.socket.connect()
+
             handshake = self.socket.recv()
             if handshake["protocol"] != 1:
                 raise ValueError("Only protocol V1 is currently supported")
+
+            self.connected = True
         except ValueError as e:
             raise ProtocolException("Error in CS handshake: %s" % e)
 
@@ -27,6 +27,9 @@ class ClearSkies(object):
         try:
             self.socket.send(cmd)
             return self.socket.recv()
+        except TransportException as e:
+            self.connected = False
+            raise
         except ValueError as e:
             raise ProtocolException("Error decoding command: %s" % e)
 
