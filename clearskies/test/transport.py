@@ -20,13 +20,13 @@ class TestUnixJsonTransport(unittest.TestCase):
         s.connect()
         s.send({"foo": "bar"})
 
-        socket().send.assert_called_with('{"foo": "bar"}\n')
+        socket().send.assert_called_with('{"foo": "bar"}\n'.encode("utf8"))
 
     def test_recv(self, socket):
         s = UnixJsonTransport("foo.sock")
         s.connect()
 
-        socket().recv.return_value = '{"foo": "bar"}'
+        socket().recv.return_value = '{"foo": "bar"}'.encode("utf8")
         self.assertDictEqual(
             s.recv(),
             {"foo": "bar"}
@@ -36,7 +36,7 @@ class TestUnixJsonTransport(unittest.TestCase):
         s = UnixJsonTransport("foo.sock")
         s.connect()
 
-        socket().recv.return_value = 'somethingblah'
+        socket().recv.return_value = 'somethingblah'.encode("utf8")
         self.assertRaises(ValueError, s.recv)
 
     def test_close(self, socket):
