@@ -20,8 +20,8 @@ class UnixJsonSocket(object):
         return js
 
     def send(self, js):
+        log.debug("> %s" % js)
         data = json.dumps(js)
-        log.debug("> %s" % data)
         self.socket.send(data+"\n")
 
     def close(self):
