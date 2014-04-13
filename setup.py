@@ -12,10 +12,10 @@ requires = [
     'pyxdg',
 
     # testing
-    #'nose',
-    #'coverage',
-    #'unittest2',
-    #'mock',
+    'nose',
+    'coverage',
+    'unittest2',
+    'mock',
 ]
 
 setup(
