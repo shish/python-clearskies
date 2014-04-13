@@ -6,6 +6,8 @@ import sys
 import argparse
 import logging
 
+log = logging.getLogger("clearskies.cli")  # __name__ == "__main__" if we're debugging
+
 
 class CLI(object):
     def __init__(self):
@@ -65,10 +67,14 @@ class CLI(object):
         try:
             self.cs.connect()
         except FileNotFoundError:
-            print("Coudn't connect to %s" % self.cs.control_path)
-            print("Is the daemon running?")
+            log.error("Coudn't connect to %s" % self.cs.control_path)
+            log.error("Is the daemon running?")
             return
-        args.func(args)
+
+        if hasattr(args, "func"):
+            args.func(args)
+        else:
+            log.error("No command specified, use --help for a list")
 
     def stop(self, args):
         print(self.cs.stop())
