@@ -36,7 +36,7 @@ class UnixJsonTransport(Transport):
     def recv(self):
         try:
             data = self.socket.recv(1024)
-            log.debug("< %s" % data)
+            log.debug("< %s" % data.strip())
             js = json.loads(data.decode("utf8"))
             return js
         except socket.error as e:
