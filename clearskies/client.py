@@ -59,7 +59,7 @@ class ClearSkies(object):
     def list_shares(self):
         return self._cmd({
             "type": "list_shares",
-        })
+        })["shares"]
 
     def create_access_code(self, path, mode):
         return self._cmd({
