@@ -1,11 +1,11 @@
 from mock import Mock, patch
-import unittest2
+import unittest
 
 from clearskies.client import ClearSkies, ProtocolException
 
 
 @patch("clearskies.client.UnixJsonTransport")
-class TestClearSkies(unittest2.TestCase):
+class TestClearSkies(unittest.TestCase):
     def test_init(self, UJS):
         c = ClearSkies()
 

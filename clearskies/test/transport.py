@@ -1,11 +1,11 @@
 from mock import Mock, patch
-import unittest2
+import unittest
 
 from clearskies.transport import UnixJsonTransport
 
 
 @patch("socket.socket")
-class TestUnixJsonTransport(unittest2.TestCase):
+class TestUnixJsonTransport(unittest.TestCase):
     def test_init(self, socket):
         s = UnixJsonTransport("/")
 
