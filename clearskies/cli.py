@@ -4,6 +4,7 @@ from clearskies.client import ClearSkies
 
 import sys
 import argparse
+import logging
 
 
 class CLI(object):
@@ -11,6 +12,9 @@ class CLI(object):
         pass
 
     def main(self, args):
+        logging.basicConfig(level=logging.DEBUG, format="%(asctime)19.19s %(levelname)4.4s %(message)s")
+        module_log = logging.getLogger("clearskies")
+
         parser = argparse.ArgumentParser(description='ClearSkies python interface demo')
         parser.add_argument('-v', '--verbose', action="store_true", default=False)
 
@@ -52,7 +56,11 @@ class CLI(object):
         args = parser.parse_args(args[1:])
 
         self.cs = ClearSkies()
-        self.cs.debug = args.verbose
+
+        if args.verbose:
+            module_log.setLevel(logging.DEBUG)
+        else:
+            module_log.setLevel(logging.INFO)
 
         try:
             self.cs.connect()
@@ -78,13 +86,12 @@ class CLI(object):
         print(self.cs.create_share(args.path))
 
     def list_shares(self, args):
-        resp = self.cs.list_shares()
-        assert("shares" in resp)
+        shares = self.cs.list_shares()
 
         fmt = "%6s %-20s"
         print(fmt % ("Status", "Share"))
         print(fmt % ("~~~~~~", "~~~~~"))
-        for share in resp["shares"]:
+        for share in shares:
             print(fmt % (share["status"], share["path"]))
 
     def create_access_code(self, args):
