@@ -4,7 +4,7 @@ import unittest2
 from clearskies.client import ClearSkies, ProtocolException
 
 
-@patch("clearskies.client.UnixJsonSocket")
+@patch("clearskies.client.UnixJsonTransport")
 class TestClearSkies(unittest2.TestCase):
     def test_init(self, UJS):
         c = ClearSkies()
@@ -119,7 +119,7 @@ class TestClearSkies(unittest2.TestCase):
     def test_list_shares(self, UJS):
         UJS().recv.side_effect = [
             {"protocol": 1, "service": "ClearSkies Control", "software": "test"},
-            {},
+            {"shares": [{"path": "/home/foo/Shared", "status": "N/A"}]},
         ]
 
         c = ClearSkies()

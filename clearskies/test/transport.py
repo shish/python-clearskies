@@ -1,7 +1,7 @@
 from mock import Mock, patch
 import unittest2
 
-from clearskies.unixjsonsocket import UnixJsonTransport
+from clearskies.transport import UnixJsonTransport
 
 
 @patch("socket.socket")
