@@ -81,7 +81,7 @@ class ClearSkies(object):
             "type": "create_access_code",
             "path": path,
             "mode": mode,
-        })
+        })["access_code"]
 
     def add_share(self, code, path):
         return self._cmd({

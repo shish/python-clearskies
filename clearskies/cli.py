@@ -12,7 +12,7 @@ log = logging.getLogger("clearskies.cli")  # __name__ == "__main__" if we're deb
 
 class CLI(object):
     def __init__(self):
-        pass
+        self.cs = None
 
     def main(self, args):
         logging.basicConfig(level=logging.DEBUG, format="%(asctime)19.19s %(levelname)4.4s %(message)s")
@@ -68,7 +68,7 @@ class CLI(object):
         try:
             self.cs.connect()
         except ClientException as e:
-            log.error("Coudn't connect to daemon: %s" % e)
+            log.error("Couldn't connect to daemon: %s" % e)
             log.error("Is the daemon running?")
             return
 
