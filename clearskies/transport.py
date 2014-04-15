@@ -7,7 +7,7 @@ from clearskies.exc import TransportException
 log = logging.getLogger(__name__)
 
 
-class Transport(object):
+class Transport(object):  # pragma: no cover
     def connect(self):
         raise NotImplementedError()
 

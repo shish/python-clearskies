@@ -5,12 +5,15 @@ import platform
 
 try:
     import xdg.BaseDirectory as xdgBaseDirectory
-except ImportError:
+except ImportError:  # pragma: no cover
     # hack for dependency-free quickstart
     class xdgBaseDirectory:
         @staticmethod
         def save_data_path(x):
-            return os.path.join(os.path.expanduser("~/.local/share/"), x)
+            path = os.path.join(os.path.expanduser("~/.local/share/"), x)
+            if not os.path.exists(path):
+                os.mkdir(path)
+            return path
 
 
 class ClearSkies(object):

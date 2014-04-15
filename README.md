@@ -55,6 +55,7 @@ $ ./clearskies/cli.py -v list
 2014-04-15 19:02:08 DEBU < {"service":"ClearSkies Control","software":"clearskies 0.1pre","protocol":1}
 2014-04-15 19:02:08 DEBU > {'type': 'list_shares'}
 2014-04-15 19:02:08 DEBU < {"shares":[{"path":"/home/shish/Documents","status":"N/A"},{"path":"/home/shish/Pictures/Unikitty","status":"N/A"}]}
+
 Status Share
 ~~~~~~ ~~~~~
    N/A /home/shish/Documents
