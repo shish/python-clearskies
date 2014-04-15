@@ -1,6 +1,7 @@
-from clearskies.transport import UnixJsonTransport
+from clearskies.transport import UnixJsonTransport, WindowsJsonTransport
 from clearskies.exc import ProtocolException, TransportException
 import os
+import platform
 
 try:
     import xdg.BaseDirectory as xdgBaseDirectory
@@ -17,7 +18,12 @@ class ClearSkies(object):
         data_dir = xdgBaseDirectory.save_data_path("clearskies")
         control_path = os.path.join(data_dir, "control")
         self.connected = False
-        self.socket = UnixJsonTransport(control_path)
+
+        plat = platform.platform()
+        if "Windows" in plat:
+            self.socket = WindowsJsonTransport(control_path)
+        else:
+            self.socket = UnixJsonTransport(control_path)
 
     def connect(self):
         try:

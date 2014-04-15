@@ -133,13 +133,14 @@ class TestClearSkies(unittest.TestCase):
     def test_create_access_code(self, UJS):
         UJS().recv.side_effect = [
             {"protocol": 1, "service": "ClearSkies Control", "software": "test"},
-            {},
+            {"access_code": "SYNC123ABC"},
         ]
 
         c = ClearSkies()
         c.connect()
-        c.create_access_code("/home/foo/Shared", "read_write")
+        code = c.create_access_code("/home/foo/Shared", "read_write")
 
+        self.assertEqual(code, "SYNC123ABC")
         UJS().send.assert_called_with({
             "type": "create_access_code",
             "path": "/home/foo/Shared",
