@@ -3,6 +3,8 @@ python-clearskies
 
 A python library for communicating with the ClearSkies daemon
 
+[![Build Status](https://travis-ci.org/shish/python-clearskies.svg?branch=master)](https://travis-ci.org/shish/python-clearskies)
+
 ```
 from clearskies.client import ClearSkies
 
