@@ -7,6 +7,7 @@ try:
     import xdg.BaseDirectory as xdgBaseDirectory
 except ImportError:  # pragma: no cover
     # hack for dependency-free quickstart
+    print("WARNING: failed to import xdg library, using hacky fallback")
     class xdgBaseDirectory:
         @staticmethod
         def save_data_path(x):
