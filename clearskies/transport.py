@@ -34,11 +34,14 @@ class UnixJsonTransport(Transport):
             raise TransportException(e)
 
     def recv(self):
+        data = None
         try:
             data = self.socket.recv(1024)
             log.debug("< %s" % data.strip())
             js = json.loads(data.decode("utf8"))
             return js
+        except ValueError as e:
+            raise TransportException("Couldn't decode JSON: %r" % data)
         except socket.error as e:
             raise TransportException(e)
 
@@ -59,10 +62,8 @@ class UnixJsonTransport(Transport):
 
 try:
     import win32file
-    import win32pipe
-    have_win32 = True
 except ImportError:
-    have_win32 = False
+    win32file = None
 
 
 class WindowsJsonTransport(Transport):
@@ -72,8 +73,8 @@ class WindowsJsonTransport(Transport):
 
     def connect(self):
         try:
-            if not have_win32:
-                raise TransportException("Error importing win32file / win32pipe modules")
+            if not win32file:
+                raise TransportException("Error importing win32file module")
 
             self.socket = win32file.CreateFile(
                 self.control_path,
@@ -86,6 +87,7 @@ class WindowsJsonTransport(Transport):
             raise TransportException(e)
 
     def recv(self):
+        data = None
         try:
             status, data = win32file.ReadFile(self.socket, 4096)
             if status != 0:
@@ -93,6 +95,8 @@ class WindowsJsonTransport(Transport):
             log.debug("< %s" % data.strip())
             js = json.loads(data.decode("utf8"))
             return js
+        except ValueError as e:
+            raise TransportException("Couldn't decode JSON: %r" % data)
         except Exception as e:
             raise TransportException("Error while reading from socket: %s" % e)
 
