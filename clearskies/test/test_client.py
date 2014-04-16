@@ -1,8 +1,12 @@
-from mock import Mock, patch
+from mock import patch
 import unittest
+import sys
 
 from clearskies.client import ClearSkies, ProtocolException
 from clearskies.exc import TransportException
+
+
+_open = "__builtin__.open" if sys.version_info[0] == 2 else "builtins.open"
 
 
 @patch("clearskies.client.UnixJsonTransport")
@@ -205,7 +209,7 @@ class TestClearSkies(unittest.TestCase):
         c = ClearSkies()
         c.connect()
 
-        with patch("__builtin__.open") as mock_open:
+        with patch(_open) as mock_open:
             mock_open.return_value.read.return_value = "some\nlog\ndata\n"
             # get all the log data
             self.assertEqual(c.get_log_data(), "some\nlog\ndata\n")
@@ -223,6 +227,6 @@ class TestClearSkies(unittest.TestCase):
         c = ClearSkies()
         c.connect()
 
-        with patch("__builtin__.open") as mock_open:
+        with patch(_open) as mock_open:
             mock_open.side_effect = IOError("File not found")
             self.assertRaises(ProtocolException, c.get_log_data)
