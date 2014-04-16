@@ -103,3 +103,14 @@ class ClearSkies(object):
             "type": "remove_share",
             "path": path,
         })
+
+    def get_log_data(self, lines=0):
+        try:
+            data_dir = xdgBaseDirectory.save_data_path("clearskies")
+            log_path = os.path.join(data_dir, "log")
+            data = open(log_path).read()
+            if lines:
+                data = "\n".join(data.split("\n")[-(lines + 1):])
+            return data
+        except Exception as e:
+            raise ProtocolException("Couldn't get log data: %s" % e)

@@ -194,3 +194,35 @@ class TestClearSkies(unittest.TestCase):
             "type": "remove_share",
             "path": "/home/foo/Shared",
         })
+
+    def test_get_log_data(self, UJS):
+        UJS().recv.side_effect = [
+            {"protocol": 1, "service": "ClearSkies Control", "software": "test"},
+            # get_log_data bypasses the server and gets data straight from the file
+            # possibly this should change in future
+        ]
+
+        c = ClearSkies()
+        c.connect()
+
+        with patch("__builtin__.open") as mock_open:
+            mock_open.return_value.read.return_value = "some\nlog\ndata\n"
+            # get all the log data
+            self.assertEqual(c.get_log_data(), "some\nlog\ndata\n")
+
+            # get the bottom two lines
+            self.assertEqual(c.get_log_data(2), "log\ndata\n")
+
+    def test_get_log_data__io_error(self, UJS):
+        UJS().recv.side_effect = [
+            {"protocol": 1, "service": "ClearSkies Control", "software": "test"},
+            # get_log_data bypasses the server and gets data straight from the file
+            # possibly this should change in future
+        ]
+
+        c = ClearSkies()
+        c.connect()
+
+        with patch("__builtin__.open") as mock_open:
+            mock_open.side_effect = IOError("File not found")
+            self.assertRaises(ProtocolException, c.get_log_data)
