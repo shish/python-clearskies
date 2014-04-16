@@ -48,8 +48,6 @@ class ClearSkies(object):
         except TransportException as e:
             self.connected = False
             raise
-        except ValueError as e:
-            raise ProtocolException("Error decoding command: %s" % e)
 
     def stop(self):
         return self._cmd({

@@ -1,15 +1,36 @@
-from mock import Mock, patch
+from mock import patch
 import unittest
 import socket as _socket
 
 from clearskies.exc import TransportException
-from clearskies.transport import UnixJsonTransport, WindowsJsonTransport
+from clearskies.transport import Transport, UnixJsonTransport, WindowsJsonTransport
+
+
+class TestTransport(unittest.TestCase):
+    def test_init(self):
+        Transport("foo.sock")
+
+    def test_connect(self):
+        s = Transport("foo.sock")
+        self.assertRaises(NotImplementedError, s.connect)
+
+    def test_send(self):
+        s = Transport("foo.sock")
+        self.assertRaises(NotImplementedError, s.send, {})
+
+    def test_recv(self):
+        s = Transport("foo.sock")
+        self.assertRaises(NotImplementedError, s.recv)
+
+    def test_close(self):
+        s = Transport("foo.sock")
+        self.assertRaises(NotImplementedError, s.close)
 
 
 @patch("socket.socket")
 class TestUnixJsonTransport(unittest.TestCase):
     def test_init(self, socket):
-        s = UnixJsonTransport("foo.sock")
+        UnixJsonTransport("foo.sock")
 
     def test_connect(self, socket):
         s = UnixJsonTransport("foo.sock")
@@ -76,10 +97,21 @@ class TestUnixJsonTransport(unittest.TestCase):
         self.assertRaises(TransportException, s.close)
 
 
+@patch("clearskies.transport.win32file", None)
+class TestWindowsJsonTransportImportError(unittest.TestCase):
+    def test_init(self):
+        WindowsJsonTransport("foo.sock")
+
+    def test_connect__error(self):
+        s = WindowsJsonTransport("foo.sock")
+
+        self.assertRaises(TransportException, s.connect)
+
+
 @patch("clearskies.transport.win32file")
 class TestWindowsJsonTransport(unittest.TestCase):
     def test_init(self, win32file):
-        s = WindowsJsonTransport("foo.sock")
+        WindowsJsonTransport("foo.sock")
 
     def test_connect(self, win32file):
         s = WindowsJsonTransport("foo.sock")

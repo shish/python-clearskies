@@ -2,14 +2,21 @@ from mock import Mock, patch
 import unittest
 
 from clearskies.client import ClearSkies, ProtocolException
+from clearskies.exc import TransportException
 
 
 @patch("clearskies.client.UnixJsonTransport")
 class TestClearSkies(unittest.TestCase):
-    def test_init(self, UJS):
+    @patch("clearskies.client.WindowsJsonTransport")
+    @patch("platform.platform")
+    def test_init(self, platform, WJS, UJS):
+        platform.return_value = "Windows"
         c = ClearSkies()
+        self.assertEqual(c.socket, WJS())
 
-        #c.control_path
+        platform.return_value = "Linux"
+        c = ClearSkies()
+        self.assertEqual(c.socket, UJS())
 
     def test_connect(self, UJS):
         UJS().recv.side_effect = [
@@ -49,15 +56,15 @@ class TestClearSkies(unittest.TestCase):
             "type": "stop",
         })
 
-    def test_stop__not_json(self, UJS):
+    def test_stop__error(self, UJS):
         UJS().recv.side_effect = [
             {"protocol": 1, "service": "ClearSkies Control", "software": "test"},
-            ValueError("Could not decode JSON"),
+            TransportException("Could not decode JSON"),
         ]
 
         c = ClearSkies()
         c.connect()
-        self.assertRaises(ProtocolException, c.stop)
+        self.assertRaises(TransportException, c.stop)
 
     def test_pause(self, UJS):
         UJS().recv.side_effect = [

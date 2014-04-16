@@ -47,7 +47,10 @@ class CLI(object):
         parser_create_access_code.add_argument('mode')
         parser_create_access_code.set_defaults(func=self.create_access_code)
 
-        parser_add_share = subparsers.add_parser('attach', help="Add access code from someone else, creating new share at [path]")
+        parser_add_share = subparsers.add_parser(
+            'attach',
+            help="Add access code from someone else, creating new share at [path]"
+        )
         parser_add_share.add_argument('code')
         parser_add_share.add_argument('path')
         parser_add_share.set_defaults(func=self.add_share)
@@ -115,5 +118,5 @@ def main():
     sys.exit(CLI().main(sys.argv))
 
 
-if __name__ == "__main__":
+if __name__ == "__main__":  # pragma: no cover
     sys.exit(CLI().main(sys.argv))
