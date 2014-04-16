@@ -8,4 +8,4 @@ python:
 install: "pip install -e ./"
 
 # command to run tests
-script: nosetests --verbose clearskies/test/*.py --with-coverage --cover-package clearskies --cover-branches
+script: nosetests --verbose --with-coverage --cover-package clearskies --cover-branches
