@@ -1,4 +1,4 @@
-from mock import patch
+from mock import patch, Mock
 import unittest
 import socket as _socket
 
@@ -29,6 +29,11 @@ class TestTransport(unittest.TestCase):
 
 @patch("socket.socket")
 class TestUnixJsonTransport(unittest.TestCase):
+    def setUp(self):
+        # This constant isn't defined at all under windows
+        import socket
+        socket.AF_UNIX = 0
+
     def test_init(self, socket):
         UnixJsonTransport("foo.sock")
 

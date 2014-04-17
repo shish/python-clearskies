@@ -1,4 +1,4 @@
-from mock import patch
+from mock import patch, Mock
 import unittest
 import sys
 
@@ -9,8 +9,10 @@ from clearskies.exc import TransportException
 _open = "__builtin__.open" if sys.version_info[0] == 2 else "builtins.open"
 
 
-@patch("clearskies.client.UnixJsonTransport")
-class TestClearSkies(unittest.TestCase):
+# This one test needs a controllable mock of platform.platform()
+# Every other test can use a constant of Linux to force UJS
+class TestClearSkies_Init(unittest.TestCase):
+    @patch("clearskies.client.UnixJsonTransport")
     @patch("clearskies.client.WindowsJsonTransport")
     @patch("platform.platform")
     def test_init(self, platform, WJS, UJS):
@@ -22,6 +24,10 @@ class TestClearSkies(unittest.TestCase):
         c = ClearSkies()
         self.assertEqual(c.socket, UJS())
 
+
+@patch("platform.platform", Mock(return_value="Linux"))
+@patch("clearskies.client.UnixJsonTransport")
+class TestClearSkies(unittest.TestCase):
     def test_connect(self, UJS):
         UJS().recv.side_effect = [
             {"protocol": 1, "service": "ClearSkies Control", "software": "test"},
@@ -199,6 +205,9 @@ class TestClearSkies(unittest.TestCase):
             "path": "/home/foo/Shared",
         })
 
+    ##########################################################################
+    # Not official APIs section
+    ##########################################################################
     def test_get_log_data(self, UJS):
         UJS().recv.side_effect = [
             {"protocol": 1, "service": "ClearSkies Control", "software": "test"},
@@ -230,3 +239,71 @@ class TestClearSkies(unittest.TestCase):
         with patch(_open) as mock_open:
             mock_open.side_effect = IOError("File not found")
             self.assertRaises(ProtocolException, c.get_log_data)
+
+    def test_get_config(self, UJS):
+        UJS().recv.side_effect = [
+            {"protocol": 1, "service": "ClearSkies Control", "software": "test"},
+            {"config": {"key": "value"}},
+        ]
+
+        c = ClearSkies()
+        c.connect()
+        c.set_config({"key": "value"})  # hack
+        self.assertDictEqual(
+            c.get_config(),
+            {"key": "value"}
+        )
+
+        #UJS().send.assert_called_with({
+        #    "type": "get_config",
+        #})
+
+    def test_set_config(self, UJS):
+        UJS().recv.side_effect = [
+            {"protocol": 1, "service": "ClearSkies Control", "software": "test"},
+            {},
+        ]
+
+        c = ClearSkies()
+        c.connect()
+        c.set_config({"key": "value"})
+
+        #UJS().send.assert_called_with({
+        #    "type": "set_config",
+        #    "config": {"key": "value"},
+        #})
+
+    def test_get_config_value(self, UJS):
+        UJS().recv.side_effect = [
+            {"protocol": 1, "service": "ClearSkies Control", "software": "test"},
+            {"value": "bar"},
+        ]
+
+        c = ClearSkies()
+        c.connect()
+        c.set_config({"foo": "bar"})  # hack
+        self.assertEqual(
+            c.get_config_value("foo"),
+            "bar"
+        )
+
+        #UJS().send.assert_called_with({
+        #    "type": "get_config_value",
+        #    "key": "foo",
+        #})
+
+    def test_set_config_value(self, UJS):
+        UJS().recv.side_effect = [
+            {"protocol": 1, "service": "ClearSkies Control", "software": "test"},
+            {},
+        ]
+
+        c = ClearSkies()
+        c.connect()
+        c.set_config_value("foo", "bar")
+
+        #UJS().send.assert_called_with({
+        #    "type": "set_config_value",
+        #    "key": "foo",
+        #    "value": "bar",
+        #})

@@ -13,7 +13,7 @@ except ImportError:  # pragma: no cover
         def save_data_path(x):
             path = os.path.join(os.path.expanduser("~/.local/share/"), x)
             if not os.path.exists(path):
-                os.mkdir(path)
+                os.makedirs(path)
             return path
 
 
@@ -104,6 +104,9 @@ class ClearSkies(object):
             "path": path,
         })
 
+    ##########################################################################
+    # Not official APIs section
+    ##########################################################################
     def get_log_data(self, lines=0):
         try:
             data_dir = xdgBaseDirectory.save_data_path("clearskies")
@@ -114,3 +117,21 @@ class ClearSkies(object):
             return data
         except Exception as e:
             raise ProtocolException("Couldn't get log data: %s" % e)
+
+    __config = {
+        "tracker": "http://clearskies.tuxng.org/clearskies/track",
+        "upload_limit": "32000",
+        "download_limit": "256000",
+    }
+
+    def get_config(self):
+        return self.__config.copy()
+
+    def set_config(self, config):
+        self.__config = config.copy()
+
+    def get_config_value(self, key):
+        return self.__config[key]
+
+    def set_config_value(self, key, value):
+        self.__config[key] = value
