@@ -2,6 +2,10 @@ from clearskies.transport import UnixJsonTransport, WindowsJsonTransport
 from clearskies.exc import ProtocolException, TransportException
 import os
 import platform
+import logging
+
+log = logging.getLogger(__name__)
+
 
 try:
     import xdg.BaseDirectory as xdgBaseDirectory
@@ -128,13 +132,17 @@ class ClearSkies(object):
     }
 
     def get_config(self):
+        log.debug("STUB: Getting config")
         return self.__config.copy()
 
     def set_config(self, config):
+        log.debug("STUB: Setting config")
         self.__config = config.copy()
 
     def get_config_value(self, key):
+        log.debug("STUB: Getting config %r", key)
         return self.__config[key]
 
     def set_config_value(self, key, value):
+        log.debug("STUB: Setting config %r to %r", key, value)
         self.__config[key] = value
