@@ -120,8 +120,11 @@ class ClearSkies(object):
 
     __config = {
         "tracker": "http://clearskies.tuxng.org/clearskies/track",
-        "upload_limit": "32000",
-        "download_limit": "256000",
+        "upload_limit": 32000,
+        "download_limit": 256000,
+        "demo_int": 123,
+        "demo_bool": True,
+        "demo_string": "foo",
     }
 
     def get_config(self):
